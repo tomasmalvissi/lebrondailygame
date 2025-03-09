@@ -1,0 +1,31 @@
+name: NBA Publisher
+
+on:
+  schedule:
+    # Ejecutar dos veces al día a las 9:00 AM y 9:00 PM UTC
+    # Puedes ajustar estos horarios según tus necesidades
+    - cron: '0 01,20 * * *'
+  
+  # También permite ejecución manual para pruebas
+  workflow_dispatch:
+
+jobs:
+  publish-nba-games:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Run NBA Publisher
+      run: dotnet run --project LBJ.csproj --configuration Release
