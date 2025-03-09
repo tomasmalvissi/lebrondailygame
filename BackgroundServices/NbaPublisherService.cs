@@ -51,20 +51,16 @@ public class NbaPublisherService : BackgroundService
                 {
                     _logger.LogInformation("Not matches found from today");
                 }
-
-                // Determinar intervalo de espera
-                var delayMinutes = _options.Value.CheckIntervalHours;
-                _logger.LogInformation("Waiting {Minutes} minutes until next cicle", delayMinutes);
-
-                await Task.Delay(TimeSpan.FromMinutes(delayMinutes), stoppingToken);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error in publish cicle");
-
-                // Esperar menos tiempo en caso de error antes de reintentar
-                await Task.Delay(TimeSpan.FromMinutes(5), stoppingToken);
             }
+
+            // Determinar intervalo de espera
+            var delayMinutes = _options.Value.CheckIntervalHours;
+            _logger.LogInformation("Waiting {Minutes} minutes until next cicle", delayMinutes);
+            await Task.Delay(TimeSpan.FromHours(delayMinutes), stoppingToken);
         }
     }
 }
