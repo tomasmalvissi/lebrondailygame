@@ -58,6 +58,8 @@ public class NbaService : INbaService
 
     private string FormatDateToRequest()
     {
-        return DateTime.Now.ToString("yyyy-MM-dd");
+        DateTime today = DateTime.Now;
+        DateTime yesterday = today.AddDays(-1);
+        return $"{yesterday:yyyy-MM-dd}&{today:yyyy-MM-dd}";
     }
 }

@@ -31,10 +31,18 @@ public class NbaPublisherService : IHostedService
         {
             // Obtener partidos
             var match = await _nbaService.GetLakersGames();
-            if (match is not null && match.HomeTeamScore is 0)
+            if (match.Id is not 0 && match.HomeTeamScore is 0) //New Game
             {
                 // Formatear mensaje
-                var message = TweetMessageFormatHelper.FormatResponseForTweet(match);
+                var message = TweetMessageFormatHelper.FormatResponseForNewGame(match);
+                // Publicar en Twitter
+                await _twitterService.PublishTweetAsync(message);
+                _logger.LogInformation("Successfully tweeted about Lakers game");
+            }
+            else if (match.Id is not 0 && match.Status is "Final") //Results from Game
+            {
+                // Formatear mensaje
+                var message = TweetMessageFormatHelper.FormatResponseForFinishGame(match);
                 // Publicar en Twitter
                 await _twitterService.PublishTweetAsync(message);
                 _logger.LogInformation("Successfully tweeted about Lakers game");
@@ -42,18 +50,19 @@ public class NbaPublisherService : IHostedService
             else
             {
                 _logger.LogInformation("No matches found for today");
+                Environment.Exit(0);
             }
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error in NBA publisher service");
-            // En GitHub Actions, un código de salida distinto de cero indicará fallo
-            Environment.ExitCode = 1;
+            Environment.Exit(1);
         }
         finally
         {
             // Indicar que el host debe detenerse después de completar esta ejecución
             _logger.LogInformation("NBA Publisher Service completed, stopping host");
+            Environment.Exit(0);
         }
     }
 
