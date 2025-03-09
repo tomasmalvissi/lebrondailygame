@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.Net.Http.Json;
 using System.Runtime;
+using System.Text.Json;
 
 namespace LBJ.APIServices;
 
@@ -41,7 +42,11 @@ public class NbaService : INbaService
         try
         {
             var url = $"{_options.BaseUrl.TrimEnd('/')}/games?dates[]={date}";
-            var response = await _httpClient.GetFromJsonAsync<GameResponse>(url);
+            var rawResponse = await _httpClient.GetStringAsync(url);
+
+            _logger.LogInformation("Raw API Response: {RawResponse}", rawResponse);
+            var response = JsonSerializer.Deserialize<GameResponse>(rawResponse);
+
             return response?.Data ?? new List<Game>();
         }
         catch (Exception ex)

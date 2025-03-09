@@ -45,6 +45,7 @@ public class TwitterService : ITwitterService
             var response = await _httpClient.SendAsync(request);
 
             var responseContent = await response.Content.ReadAsStringAsync();
+            _logger.LogInformation("Raw API Response: {RawResponse}", responseContent);
 
             if (!response.IsSuccessStatusCode)
             {
