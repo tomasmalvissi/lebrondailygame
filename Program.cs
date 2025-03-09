@@ -39,6 +39,7 @@ public class Program
             })
             .ConfigureLogging((hostContext, loggingBuilder) =>
             {
+                loggingBuilder.ClearProviders();
                 loggingBuilder.AddConsole();
                 loggingBuilder.AddDebug();
             })
