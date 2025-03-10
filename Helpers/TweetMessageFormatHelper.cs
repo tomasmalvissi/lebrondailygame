@@ -75,4 +75,16 @@ public static class TweetMessageFormatHelper
 
         return formattedDate;
     }
+
+    public static string NormalizeTextForComparison(string text)
+    {
+        if (string.IsNullOrEmpty(text))
+            return string.Empty;
+
+        string normalized = text.Replace("\r", "").Replace("\n", "");
+        normalized = System.Text.RegularExpressions.Regex.Replace(normalized, @"\s+", " ");
+        normalized = normalized.Trim();
+
+        return normalized;
+    }
 }

@@ -5,6 +5,7 @@ public class TwitterOptions
     public const string ConfigSection = "Twitter";
 
     public string BaseUrl { get; set; }
+    public string UserId { get; set; }
     public string BearerToken { get; set; }
     public string ConsumerKey { get; set; }
     public string ConsumerSecret { get; set; }

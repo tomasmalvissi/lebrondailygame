@@ -30,6 +30,8 @@ public class NbaService : INbaService
     {
         var games = await GetGamesForDateAsync(FormatDateToRequest());
 
+        games = games.OrderByDescending(x => x.Id).ToList();
+
         var lakers = games.FirstOrDefault(g =>
                         g.HomeTeam.Id == _options.TeamId ||
                         g.VisitorTeam.Id == _options.TeamId);
