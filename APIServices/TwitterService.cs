@@ -42,7 +42,7 @@ public class TwitterService : ITwitterService
             var jsonContent = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.BaseUrl + "/tweets")
+            var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.BaseUrl + "tweets")
             {
                 Content = content
             };
