@@ -44,6 +44,7 @@ public class NbaService : INbaService
         try
         {
             var url = $"{_options.BaseUrl.TrimEnd('/')}/games?dates[]={date}";
+            _logger.LogInformation("Raw API Request: {RawRequest}", url);
             var rawResponse = await _httpClient.GetStringAsync(url);
 
             _logger.LogInformation("Raw API Response: {RawResponse}", rawResponse);
