@@ -38,16 +38,17 @@ public class TwitterService : ITwitterService
                 Environment.Exit(0);
             }
 
+            var uriPost = _options.Value.BaseUrl + "tweets";
             var payload = new { text = message };
             var jsonContent = JsonSerializer.Serialize(payload);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            var request = new HttpRequestMessage(HttpMethod.Post, _options.Value.BaseUrl + "tweets")
+            var request = new HttpRequestMessage(HttpMethod.Post, uriPost)
             {
                 Content = content
             };
 
-            var authHeader = _oauthHelper.GenerateAuthorizationHeader(_options.Value.BaseUrl, "POST");
+            var authHeader = _oauthHelper.GenerateAuthorizationHeader(uriPost, "POST");
             request.Headers.Add("Authorization", authHeader);
 
             var response = await _httpClient.SendAsync(request);
