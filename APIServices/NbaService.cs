@@ -28,7 +28,7 @@ public class NbaService : INbaService
 
     public async Task<Game> GetLakersGames()
     {
-        var games = await GetGamesForDateAsync(FormatDateToRequest());
+        var games = await GetGamesForDateAsync();
 
         games = games.OrderByDescending(x => x.Id).ToList();
 
@@ -39,11 +39,14 @@ public class NbaService : INbaService
         return lakers ?? new Game();
     }
 
-    private async Task<List<Game>> GetGamesForDateAsync(string date)
+    private async Task<List<Game>> GetGamesForDateAsync()
     {
         try
         {
-            var url = $"{_options.BaseUrl.TrimEnd('/')}/games?dates[]={date}";
+            string yesterday = FormatDateYesterdayToRequest();
+            string today = FormatDateTodayToRequest();
+
+            var url = $"{_options.BaseUrl.TrimEnd('/')}/games?dates[]={yesterday}&dates[]={today}";
             _logger.LogInformation("Raw API Request: {RawRequest}", url);
             var rawResponse = await _httpClient.GetStringAsync(url);
 
@@ -54,15 +57,19 @@ public class NbaService : INbaService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error al obtener partidos de la API para la fecha {Date}", date);
+            _logger.LogError(ex, "Error al obtener partidos de la API para la fecha {Date}", DateTime.Today);
             throw;
         }
     }
 
-    private string FormatDateToRequest()
+    private string FormatDateYesterdayToRequest()
+    {
+        DateTime yesterday = DateTime.Now.AddDays(-1);
+        return $"{yesterday:yyyy-MM-dd}";
+    }
+    private string FormatDateTodayToRequest()
     {
         DateTime today = DateTime.Now;
-        DateTime yesterday = today.AddDays(-1);
-        return $"{yesterday:yyyy-MM-dd}&{today:yyyy-MM-dd}";
+        return $"{today:yyyy-MM-dd}";
     }
 }
